@@ -1,0 +1,30 @@
+all:
+  hosts:
+    R1:
+      ansible_host: 192.168.10.1
+      ansible_user: username
+      ansible_password: password
+      ansible_connection: network_cli
+    R2:
+      ansible_host: 192.168.10.2
+      ansible_user: username
+      ansible_password: password
+      ansible_connection: network_cli
+    R3:
+      ansible_host: 192.168.20.2
+      ansible_user: username
+      ansible_password: password
+      ansible_connection: network_cli
+    R4:
+      ansible_host: 192.168.30.2
+      ansible_user: username
+      ansible_password: password
+      ansible_connection: network_cli
+
+  children:
+    Routers:
+      hosts:
+        R1:
+        R2:
+        R3:
+        R4:

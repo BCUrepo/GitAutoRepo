@@ -1,0 +1,27 @@
+---
+- name: Configure EIGRP on R1 and R2
+  hosts: routers
+  gather_facts: no
+  tasks:
+    - name: Configure EIGRP on R1
+      ios_config:
+        lines:
+          - router eigrp 1
+          - network 192.168.10.0
+        parents: interface FastEthernet0/0
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+      when: inventory_hostname == 'R1'
+    - name: Configure EIGRP on R2
+      ios_config:
+        lines:
+          - router eigrp 1
+          - network 192.168.10.0
+        parents: interface FastEthernet0/0
+        provider:
+          host: "{{ inventory_hostname }}"
+          username: "{{ username }}"
+          password: "{{ password }}"
+      when: inventory_hostname == 'R2'

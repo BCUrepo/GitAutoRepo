@@ -1,0 +1,35 @@
+---
+- name: Configure OSPF between R2 and R3
+  hosts: R2-R3
+  gather_facts: no
+  vars:
+    ospf_networks:
+      - network: 192.168.20.0
+        wildcard_mask: 0.0.0.255
+        area: 0
+      - network: 192.168.30.0
+        wildcard_mask: 0.0.0.255
+        area: 0
+  tasks:
+    - name: Configure OSPF on R2 f1/0
+      ios_config:
+        lines:
+          - "router ospf 1"
+          - "network {{ ospf_networks[0].network }} {{ ospf_networks[0].wildcard_mask }} area {{ ospf_networks[0].area }}"
+        parents: interface GigabitEthernet1/0
+      register: ospf_r2_f1
+
+    - name: Configure OSPF on R3 f0/0
+      ios_config:
+        lines:
+          - "router ospf 1"
+          - "network {{ ospf_networks[0].network }} {{ ospf_networks[0].wildcard_mask }} area {{ ospf_networks[0].area }}"
+          - "network {{ ospf_networks[1].network }} {{ ospf_networks[1].wildcard_mask }} area {{ ospf_networks[1].area }}"
+        parents: interface GigabitEthernet0/0
+      register: ospf_r3_f0
+
+    - name: Save the configuration on R2 and R3
+      ios_command:
+        commands:
+          - "write memory"
+      when: ospf_r2_f1.changed or ospf_r3_f0.changed
